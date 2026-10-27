@@ -1,110 +1,119 @@
-# Swimming Pool Booking App
+# Swim Session Manager
 
-Node/Express + EJS + PostgreSQL app for browsing swim sessions and booking spots.
+A swim school booking app where parents enrol their children in swim sessions and manage bookings, and admins run the timetable, track attendance and record swimmers' achievements.
 
-## Setup
+Built with **Node.js, Express 5, EJS and PostgreSQL**.
 
-1. Install dependencies:
-   ```
+<!-- Add screenshots here, for example:
+![Session booking page](docs/screenshots/sessions.png)
+![Admin dashboard](docs/screenshots/admin-dashboard.png)
+-->
+
+## Features
+
+### For parents
+
+- **Sign up and log in**, with password reset by email.
+- **Saved swimmers**: add each child once (name and age), then pick them from a dropdown when booking.
+- **Browse and book sessions**, see a weekly schedule, and view upcoming bookings on a personal dashboard.
+- **Can't attend?** Mark a booking as missed and receive a **make-up credit**, which can be redeemed against any future session.
+- **Achievements gallery**: view the photos and certificates the swim school has recorded for each swimmer.
+
+### For admins
+
+- **Session management**: create, edit and delete sessions, including times and capacity.
+- **Admin dashboard and reports**: bookings, attendance and make-up credit usage at a glance.
+- **Swimmer directory**: see every swimmer across all accounts.
+- **Achievements**: upload photos (JPG, PNG, WEBP) and certificates (PDF, max 5 MB) for any swimmer. Only admins can add or remove these, so they stay an official record.
+
+## Security and reliability
+
+- Passwords hashed with **bcrypt**; login gives a generic error and uses a constant-time comparison, so it doesn't reveal which usernames exist.
+- **CSRF tokens** on every form, and **rate limiting** on login, signup and password reset.
+- Booking runs inside a **database transaction with a row lock**, so two people can't both take the last spot in a full session.
+- Users can only cancel or change their own bookings.
+- Password reset links are **single-use** and expire after one hour.
+- Database credentials and the session secret are read from environment variables, never stored in the code.
+- Uploaded files get random filenames, preventing path-traversal and overwrite issues.
+
+## Tech stack
+
+| Layer | Technology |
+| --- | --- |
+| Server | Node.js, Express 5 |
+| Views | EJS templates |
+| Database | PostgreSQL (`pg`) |
+| Auth | `express-session`, bcrypt |
+| Uploads | Multer |
+| Email | Nodemailer (SMTP) |
+
+## Getting started
+
+**Prerequisites:** Node.js 18 or later, and PostgreSQL.
+
+1. **Install dependencies**
+
+   ```bash
    npm install
    ```
 
-2. Create the database and load the schema:
-   ```
+2. **Create the database and load the schema**
+
+   ```bash
    createdb swimming_pool
    psql -d swimming_pool -f schema.sql
    ```
 
-3. Copy `.env.example` to `.env` and fill in your real DB credentials and a
-   random `SESSION_SECRET`:
-   ```
+3. **Configure environment variables**
+
+   ```bash
    cp .env.example .env
    ```
-   Generate a secret with:
-   ```
+
+   Fill in your database credentials and a random `SESSION_SECRET`. You can generate one with:
+
+   ```bash
    node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
    ```
 
-4. Run it:
-   ```
-   npm start        # production
-   npm run dev       # auto-restart on changes (nodemon)
+4. **Run the app**
+
+   ```bash
+   npm run dev     # development, restarts on changes
+   npm start       # production
    ```
 
-5. Sign up for an account at `/signup`, then promote yourself to admin from
-   `psql`:
+   Then open `http://localhost:3000`.
+
+5. **Create an admin account.** Sign up at `/signup`, then promote yourself in `psql`:
+
    ```sql
    UPDATE users SET role = 'admin' WHERE username = 'your_username';
    ```
 
-## Achievements (Photos & Certificates)
+### Email (optional)
 
-Achievements are managed by **admins only** — they're an official record from
-the swim school, not something a parent should be able to self-certify.
+Without SMTP settings, password reset links are printed to the server terminal, which is handy for local development. To send real emails, fill in `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS` and `SMTP_FROM` in `.env`, and set `APP_BASE_URL` to the address the app is reachable at. For Gmail, use an [App Password](https://myaccount.google.com/apppasswords) rather than your real password.
 
-- **Admins**: go to `/admin/swimmers` (linked from the admin dashboard and
-  nav bar) to see every swimmer across every account, then click
-  **🏆 Manage** to upload photos/certificates for that swimmer or remove
-  existing ones.
-- **Parents**: go to `/swimmers` → **🏆 View** on their own swimmer to see a
-  read-only gallery. No upload or delete controls are shown to them.
+## Project structure
 
-Supported uploads: **photos** (JPG, PNG, WEBP) shown inline as a gallery, or
-**certificates** (PDF) shown as a "View Certificate" link. Max 5MB per file.
+```
+server.js                 Express app and all routes
+db.js                     PostgreSQL connection pool
+mailer.js                 Email sending (password reset)
+schema.sql                Database tables
+migrate_makeup_credits.sql  Migration that adds make-up credits
+dedupe_sessions.sql       One-off clean-up of duplicate sessions
+views/                    EJS templates
+public/                   Static files and uploaded achievements
+```
 
-Files are stored on disk under `public/uploads/achievements/` with
-randomly-generated filenames (never the original filename, to avoid
-path-traversal or overwrite issues).
+## Deployment note
 
-**Note for deployment:** this stores files on the local filesystem, which
-works fine for local development but **will not persist** on most hosting
-platforms (e.g. Heroku's filesystem is ephemeral, wiped on every restart/
-redeploy). If you deploy this app, swap the storage for something like AWS
-S3, Cloudinary, or a persistent volume before relying on uploads sticking
-around.
+Achievement uploads are stored on the local disk under `public/uploads/achievements/`. That works locally, but on most hosting platforms the disk is wiped on every restart or redeploy. Before deploying, move uploads to persistent storage such as Azure Blob Storage, AWS S3 or a mounted volume.
 
-## Saved Swimmers
+## Roadmap
 
-`/swimmers` lets each account save swimmer profiles (name + age) once, instead
-of retyping them on every booking. Booking forms across the app
-(`/sessions`, `/schedule`, `/profile`, `/add`) now show a dropdown of your
-saved swimmers rather than free-text name/age fields. If you haven't added
-any swimmers yet, the booking forms prompt you to add one first.
-
-Editing a swimmer's saved age only affects future bookings — past bookings
-keep the name/age that was recorded at the time, same as before.
-
-## Forgot Password
-
-`/forgot-password` lets a user request a reset link, valid for 1 hour and
-single-use. By default (no SMTP credentials set), the link is **printed to
-the server's terminal** instead of emailed — handy for local development.
-
-To actually send emails, fill in `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`,
-`SMTP_PASS`, and `SMTP_FROM` in `.env`. For Gmail, use an
-[App Password](https://myaccount.google.com/apppasswords) rather than your
-real password (`SMTP_HOST=smtp.gmail.com`, `SMTP_PORT=587`). Also set
-`APP_BASE_URL` to whatever URL the app is actually reachable at, so the
-generated reset links are correct (e.g. `http://localhost:3000` locally, or
-your real domain once deployed).
-
-## What changed from the original version
-
-- Fixed view-name mismatches that crashed `/admin/dashboard` and `/dashboard`.
-- Added the missing `/profile/edit`, `/bookings/cancel/:id`, `/add`, and
-  `/schedule` routes that the templates already linked to.
-- Added the missing `email` field to signup (the route required it but the
-  form never collected it).
-- Moved DB credentials and the session secret out of source code and into
-  `.env` (see `.env.example`).
-- Booking now runs inside a DB transaction with a row lock, so two people
-  can't both grab the last spot in a full session.
-- Added CSRF tokens to every form and a `/login` + `/signup` rate limiter.
-- Login no longer reveals whether a username exists (generic error message,
-  constant-time comparison even for unknown usernames).
-- Cancelling a booking is scoped to the logged-in user's own bookings.
-- Added `schema.sql` since none existed — a fresh clone couldn't create
-  any tables before.
-- Cleaned up `package.json` (`start`/`dev` scripts, correct `main`, dropped
-  the redundant `body-parser` dependency in favor of Express 5's built-in
-  `express.urlencoded()`), added `.gitignore`.
+- Coach profiles and assigning coaches to sessions
+- Online payments for session bookings
+- Automated tests and a CI pipeline
