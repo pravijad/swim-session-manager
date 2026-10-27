@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= typeof pageTitle !== 'undefined' ? pageTitle : 'Swimming Pool' %> 🏊</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<% if (typeof username !== 'undefined' && username) { %>
+<div class="container" style="max-width:900px; padding-bottom:0; margin-bottom:0; border-radius:20px 20px 0 0;">
+    <div class="header">
+        <h2>🏊 Welcome, <%= username %>!</h2>
+        <div>
+            <a href="/profile" class="btn-edit">👤 Profile</a>
+            <a href="/swimmers" class="btn-edit">🏊 Swimmers</a>
+            <a href="/sessions" class="btn-edit">📅 Sessions</a>
+            <% if (typeof role !== 'undefined' && role === 'admin') { %>
+                <a href="/admin/swimmers" class="btn-edit">👥 All Swimmers</a>
+                <a href="/admin/sessions" class="btn-edit">🗓 Manage Sessions</a>
+                <a href="/admin/reports" class="btn-edit">📊 Reports</a>
+            <% } %>
+            <form action="/logout" method="POST" style="display:inline;">
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                <button type="submit" class="btn-logout">Logout 🚪</button>
+            </form>
+        </div>
+    </div>
+</div>
+<% } %>

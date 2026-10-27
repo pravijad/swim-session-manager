@@ -1,0 +1,47 @@
+<%- include('partials/header', { pageTitle: 'Admin Dashboard' }) %>
+
+<div class="container">
+    <h1>🛠 Admin Dashboard</h1>
+    <p><a href="/admin/swimmers" class="btn-add">👥 Manage Swimmers & Achievements</a></p>
+
+    <div class="card">
+        <h3>All Users</h3>
+        <% if (users.length === 0) { %>
+            <p class="no-bookings">No users yet 😔</p>
+        <% } else { %>
+        <table>
+            <tr><th>Username</th><th>Full Name</th><th>Email</th><th>Role</th></tr>
+            <% users.forEach(u => { %>
+                <tr>
+                    <td><%= u.username %></td>
+                    <td><%= u.full_name || '—' %></td>
+                    <td><%= u.email %></td>
+                    <td><%= u.role %></td>
+                </tr>
+            <% }) %>
+        </table>
+        <% } %>
+    </div>
+
+    <div class="card">
+        <h3>All Bookings</h3>
+        <% if (bookings.length === 0) { %>
+            <p class="no-bookings">No bookings yet 😔</p>
+        <% } else { %>
+        <table>
+            <tr><th>User</th><th>Swimmer</th><th>Age</th><th>Session</th><th>Date</th></tr>
+            <% bookings.forEach(b => { %>
+                <tr>
+                    <td><%= b.username %></td>
+                    <td><%= b.name %></td>
+                    <td><%= b.age %></td>
+                    <td><%= b.title %></td>
+                    <td><%= b.date %></td>
+                </tr>
+            <% }) %>
+        </table>
+        <% } %>
+    </div>
+</div>
+
+<%- include('partials/footer') %>

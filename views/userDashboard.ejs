@@ -1,0 +1,28 @@
+<%- include('partials/header', { pageTitle: 'My Dashboard' }) %>
+
+<div class="container">
+    <h1>Welcome, <%= username %>! 🏊</h1>
+
+    <div class="card">
+        <h3>Your Bookings</h3>
+        <% if (bookings.length === 0) { %>
+            <p class="no-bookings">You have no bookings yet 😔</p>
+            <a href="/sessions" class="btn-add">📅 Browse Sessions</a>
+        <% } else { %>
+            <table>
+                <tr><th>Session</th><th>Date</th><th>Time</th><th>Swimmer</th><th>Age</th></tr>
+                <% bookings.forEach(b => { %>
+                    <tr>
+                        <td><%= b.title %></td>
+                        <td><%= new Date(b.date).toLocaleDateString() %></td>
+                        <td><%= b.start_time %> - <%= b.end_time %></td>
+                        <td><%= b.name %></td>
+                        <td><%= b.age %></td>
+                    </tr>
+                <% }) %>
+            </table>
+        <% } %>
+    </div>
+</div>
+
+<%- include('partials/footer') %>

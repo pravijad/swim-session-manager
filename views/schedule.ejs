@@ -1,0 +1,40 @@
+<%- include('partials/header', { pageTitle: 'Schedule' }) %>
+
+<div class="container">
+    <h2>Schedule 🏊</h2>
+
+    <% Object.keys(schedule).forEach(weekNum => { %>
+        <h3>Week <%= weekNum %></h3>
+        <div class="sessions-grid">
+        <% schedule[weekNum].forEach(s => {
+            const spotsLeft = s.capacity - s.booked_count;
+        %>
+        <div class="session-card">
+            <strong><%= s.title %></strong>
+            <p><%= new Date(s.date).toLocaleDateString() %> (<%= s.start_time %> - <%= s.end_time %>)</p>
+            <p>Spots left: <%= spotsLeft %></p>
+            <% if(spotsLeft > 0) { %>
+                <% if (swimmers.length === 0) { %>
+                    <a href="/swimmers" class="btn-add">➕ Add a swimmer first</a>
+                <% } else { %>
+                <form action="/sessions/book/<%= s.id %>" method="POST">
+                    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                    <select name="swimmer_id" required>
+                        <% swimmers.forEach(sw => { %>
+                            <option value="<%= sw.id %>"><%= sw.name %> (age <%= sw.age %>)</option>
+                        <% }) %>
+                    </select>
+                    <%- include('partials/creditSelect') %>
+                    <button type="submit" class="btn-book">Book ✅</button>
+                </form>
+                <% } %>
+            <% } else { %>
+                <button disabled class="btn-book full">Full ❌</button>
+            <% } %>
+        </div>
+        <% }) %>
+        </div>
+    <% }) %>
+</div>
+
+<%- include('partials/footer') %>

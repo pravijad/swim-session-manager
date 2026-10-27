@@ -1,0 +1,10 @@
+<% if (typeof credits !== 'undefined' && credits.length > 0) { %>
+    <select name="credit_id">
+        <option value="">🎟 Use a make-up credit? (optional)</option>
+        <% credits.forEach(c => { %>
+            <option value="<%= c.id %>">
+                <%= c.swimmer_name %> — missed "<%= c.source_title %>" (<%= new Date(c.source_date).toLocaleDateString() %>)
+            </option>
+        <% }) %>
+    </select>
+<% } %>

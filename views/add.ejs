@@ -1,0 +1,41 @@
+<%- include('partials/header', { pageTitle: 'Add Entry' }) %>
+
+<div class="container">
+    <h1>➕ Add Entry</h1>
+
+    <% if (error) { %>
+        <div class="error-message"><%= error %></div>
+    <% } %>
+
+    <% if (swimmers.length === 0) { %>
+        <p class="no-bookings">You don't have any saved swimmers yet.</p>
+        <a href="/swimmers" class="btn-add">➕ Add a swimmer first</a>
+    <% } else { %>
+    <form action="/add" method="POST">
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+        <select name="swimmer_id" required>
+            <% swimmers.forEach(sw => { %>
+                <option value="<%= sw.id %>"><%= sw.name %> (age <%= sw.age %>)</option>
+            <% }) %>
+        </select>
+
+        <select name="session_id" required>
+            <% if (sessions.length > 0) { %>
+                <% sessions.forEach(s => { %>
+                    <option value="<%= s.id %>"><%= s.title %> - <%= new Date(s.date).toLocaleDateString() %></option>
+                <% }) %>
+            <% } else { %>
+                <option disabled>No sessions available</option>
+            <% } %>
+        </select>
+
+        <%- include('partials/creditSelect') %>
+
+        <button type="submit">Book</button>
+    </form>
+    <% } %>
+
+    <a href="/" class="back">⬅ Back</a>
+</div>
+
+<%- include('partials/footer') %>

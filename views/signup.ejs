@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Signup 🏊</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+
+<div class="container">
+    <h1>📝 Signup</h1>
+
+    <% if(error) { %>
+        <div class="error-message"><%= error %></div>
+    <% } %>
+
+    <form action="/signup" method="POST">
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+        <input type="text" name="username" placeholder="Username" value="<%= username || '' %>" required autocomplete="username"><br>
+        <input type="email" name="email" placeholder="Email" value="<%= email || '' %>" required autocomplete="email"><br>
+        <input type="password" name="password" placeholder="Password (min 8 characters)" required minlength="8" autocomplete="new-password"><br>
+        <input type="password" name="confirmPassword" placeholder="Confirm Password" required minlength="8" autocomplete="new-password"><br>
+        <button type="submit">Signup</button>
+    </form>
+
+    <a href="/login" class="back">⬅ Back to Login</a>
+</div>
+
+</body>
+</html>

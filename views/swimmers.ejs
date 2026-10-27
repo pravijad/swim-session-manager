@@ -1,0 +1,63 @@
+<%- include('partials/header', { pageTitle: 'My Swimmers' }) %>
+
+<div class="container">
+    <h1>🏊 My Swimmers</h1>
+    <p class="no-bookings" style="font-style:normal;">Save each swimmer once, then pick them from a dropdown when booking — no more retyping name and age every time.</p>
+
+    <% if (error) { %>
+        <div class="error-message"><%= error %></div>
+    <% } %>
+
+    <div class="card">
+        <h3>Add a Swimmer</h3>
+        <form action="/swimmers" method="POST">
+            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+            <input type="text" name="name" placeholder="Swimmer's Name" required>
+            <input type="number" name="age" min="1" max="129" placeholder="Age" required>
+            <button type="submit" class="btn-add">➕ Add Swimmer</button>
+        </form>
+    </div>
+
+    <div class="card">
+        <h3>Saved Swimmers</h3>
+        <% if (swimmers.length === 0) { %>
+            <p class="no-bookings">No swimmers saved yet 😔 Add one above to get started.</p>
+        <% } else { %>
+            <table>
+                <tr><th>Swimmer</th><th>Achievements</th><th>Credits</th><th>Remove</th></tr>
+                <% swimmers.forEach(s => { %>
+                    <tr>
+                        <td>
+                            <form action="/swimmers/<%= s.id %>/edit" method="POST" style="display:flex; gap:8px; justify-content:center; align-items:center; flex-wrap:wrap;">
+                                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                                <input type="text" name="name" value="<%= s.name %>" required style="width:140px; margin:0;">
+                                <input type="number" name="age" value="<%= s.age %>" min="1" max="129" required style="width:70px; margin:0;">
+                                <button type="submit" class="btn-edit" style="margin:0; padding:8px 14px;">💾 Save</button>
+                            </form>
+                        </td>
+                        <td>
+                            <a href="/swimmers/<%= s.id %>/achievements" class="btn-book">🏆 View</a>
+                        </td>
+                        <td>
+                            <% if (typeof s.credit_count !== 'undefined' && s.credit_count > 0) { %>
+                                🎟 <%= s.credit_count %>
+                            <% } else { %>
+                                <span class="no-bookings">—</span>
+                            <% } %>
+                        </td>
+                        <td>
+                            <form action="/swimmers/<%= s.id %>/delete" method="POST" onsubmit="return confirm('Remove this swimmer? This will not affect past bookings.');">
+                                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                                <button type="submit" class="btn-cancel">❌</button>
+                            </form>
+                        </td>
+                    </tr>
+                <% }) %>
+            </table>
+        <% } %>
+    </div>
+
+    <a href="/sessions" class="back">⬅ Back to Sessions</a>
+</div>
+
+<%- include('partials/footer') %>

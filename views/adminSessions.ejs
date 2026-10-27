@@ -1,0 +1,69 @@
+<%- include('partials/header', { pageTitle: 'Manage Sessions' }) %>
+
+<div class="container">
+    <h1>🗓 Manage Sessions</h1>
+    <p class="no-bookings" style="font-style:normal;">Create the swim sessions that show up on
+        <a href="/sessions">/sessions</a> and <a href="/schedule">/schedule</a>. Sessions with a date
+        in the past stay here for the record but no longer appear as bookable.</p>
+
+    <% if (error) { %>
+        <div class="error-message"><%= error %></div>
+    <% } %>
+
+    <div class="card">
+        <h3>Add a Session</h3>
+        <form action="/admin/sessions" method="POST">
+            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+            <input type="text" name="title" placeholder="Session title (e.g. Morning Lap Swim)" required>
+            <input type="date" name="date" required>
+            <input type="time" name="start_time" required>
+            <input type="time" name="end_time" required>
+            <input type="number" name="capacity" min="1" max="1000" placeholder="Capacity" required>
+            <button type="submit" class="btn-add">➕ Add Session</button>
+        </form>
+    </div>
+
+    <div class="card">
+        <h3>All Sessions</h3>
+        <% if (sessions.length === 0) { %>
+            <p class="no-bookings">No sessions yet 😔 Add one above to get started.</p>
+        <% } else {
+            const today = new Date().toISOString().slice(0, 10);
+        %>
+        <table>
+            <tr>
+                <th>Title</th><th>Date</th><th>Start</th><th>End</th><th>Capacity</th><th>Booked</th><th>Delete</th>
+            </tr>
+            <% sessions.forEach(s => {
+                const dateStr = new Date(s.date).toISOString().slice(0, 10);
+                const isPast = dateStr < today;
+            %>
+                <tr style="<%= isPast ? 'opacity:0.55;' : '' %>">
+                    <td colspan="6" style="padding:0;">
+                        <form action="/admin/sessions/<%= s.id %>/edit" method="POST"
+                              style="display:flex; gap:8px; justify-content:center; align-items:center; flex-wrap:wrap; padding:10px;">
+                            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                            <input type="text" name="title" value="<%= s.title %>" required style="width:170px; margin:0;">
+                            <input type="date" name="date" value="<%= dateStr %>" required style="margin:0;">
+                            <input type="time" name="start_time" value="<%= s.start_time.slice(0,5) %>" required style="margin:0;">
+                            <input type="time" name="end_time" value="<%= s.end_time.slice(0,5) %>" required style="margin:0;">
+                            <input type="number" name="capacity" value="<%= s.capacity %>" min="1" max="1000" required style="width:70px; margin:0;">
+                            <span class="no-bookings" style="font-style:normal;"><%= s.booked_count %> booked</span>
+                            <button type="submit" class="btn-edit" style="margin:0; padding:8px 14px;">💾 Save</button>
+                        </form>
+                    </td>
+                    <td>
+                        <form action="/admin/sessions/<%= s.id %>/delete" method="POST"
+                              onsubmit="return confirm('Delete this session?<%= s.booked_count > 0 ? ' This will also cancel ' + s.booked_count + ' existing booking(s).' : '' %>');">
+                            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                            <button type="submit" class="btn-cancel">❌</button>
+                        </form>
+                    </td>
+                </tr>
+            <% }) %>
+        </table>
+        <% } %>
+    </div>
+</div>
+
+<%- include('partials/footer') %>

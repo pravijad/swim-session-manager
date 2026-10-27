@@ -1,0 +1,54 @@
+<%- include('partials/header', { pageTitle: 'Available Sessions' }) %>
+
+<div class="container">
+    <h2>Available Sessions 🏊</h2>
+    <div class="card">
+        <% if (sessions.length === 0) { %>
+            <p class="no-bookings">No upcoming sessions right now 😔</p>
+        <% } else { %>
+        <table>
+            <tr>
+                <th>Title</th>
+                <th>Date</th>
+                <th>Start</th>
+                <th>End</th>
+                <th>Capacity</th>
+                <th>Book</th>
+            </tr>
+            <% sessions.forEach(s => {
+                const spotsLeft = s.capacity - s.booked_count;
+            %>
+            <tr>
+                <td><%= s.title %></td>
+                <td><%= new Date(s.date).toLocaleDateString() %></td>
+                <td><%= s.start_time %></td>
+                <td><%= s.end_time %></td>
+                <td><%= spotsLeft %> spots left</td>
+                <td>
+                    <% if(spotsLeft > 0) { %>
+                        <% if (swimmers.length === 0) { %>
+                            <a href="/swimmers" class="btn-add">➕ Add a swimmer first</a>
+                        <% } else { %>
+                        <form action="/sessions/book/<%= s.id %>" method="POST">
+                            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                            <select name="swimmer_id" required>
+                                <% swimmers.forEach(sw => { %>
+                                    <option value="<%= sw.id %>"><%= sw.name %> (age <%= sw.age %>)</option>
+                                <% }) %>
+                            </select>
+                            <%- include('partials/creditSelect') %>
+                            <button type="submit" class="btn-book">Book</button>
+                        </form>
+                        <% } %>
+                    <% } else { %>
+                        <button disabled class="btn-book full">Full ❌</button>
+                    <% } %>
+                </td>
+            </tr>
+            <% }) %>
+        </table>
+        <% } %>
+    </div>
+</div>
+
+<%- include('partials/footer') %>

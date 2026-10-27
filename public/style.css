@@ -1,0 +1,445 @@
+/* Google Font */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+
+body {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: #fff;
+}
+
+/* Center container */
+.container {
+    width: 85%;
+    max-width: 900px;
+    margin: 50px auto;
+    padding: 30px;
+    border-radius: 20px;
+
+    /* Glass effect */
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(15px);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+}
+
+/* Heading */
+h1 {
+    text-align: center;
+    font-weight: 600;
+    margin-bottom: 20px;
+}
+
+/* Buttons */
+a, button {
+    display: inline-block;
+    padding: 10px 18px;
+    margin: 10px 5px;
+    border-radius: 8px;
+    border: none;
+    text-decoration: none;
+    color: white;
+    background: linear-gradient(45deg, #ff7eb3, #ff758c);
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+a:hover, button:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+}
+
+/* Table */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    overflow: hidden;
+    border-radius: 10px;
+}
+
+th {
+    background: rgba(255,255,255,0.2);
+    padding: 12px;
+}
+
+td {
+    background: rgba(255,255,255,0.1);
+    padding: 10px;
+    text-align: center;
+}
+
+tr:hover td {
+    background: rgba(255,255,255,0.2);
+}
+
+/* Form */
+form {
+    text-align: center;
+}
+
+input {
+    width: 70%;
+    padding: 12px;
+    margin: 10px;
+    border-radius: 8px;
+    border: none;
+    outline: none;
+}
+
+/* Back link */
+.back {
+    display: inline-block;
+    margin-top: 20px;
+}
+
+/* Small screens */
+@media (max-width: 600px) {
+    .container {
+        width: 95%;
+    }
+
+    input {
+        width: 90%;
+    }
+}
+
+/* Premium Signup Button */
+.btn-signup {
+    display: inline-block;
+    padding: 12px 25px;
+    margin: 10px 0;
+    border-radius: 12px;
+    text-decoration: none;
+    font-weight: 600;
+    color: white;
+    background: linear-gradient(135deg, #ff758c, #ff7eb3);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+    transition: 0.3s;
+}
+
+.btn-signup:hover {
+    transform: scale(1.05);
+    box-shadow: 0 12px 25px rgba(0,0,0,0.4);
+}
+
+/* Premium glassmorphic error notification */
+.error-message {
+    margin-bottom: 15px;
+    padding: 12px 20px;
+    border-radius: 12px;
+    background: rgba(255, 0, 0, 0.15);
+    backdrop-filter: blur(10px);
+    color: #ff5555;
+    font-weight: 600;
+    text-align: center;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.25);
+    transition: transform 0.2s ease;
+}
+
+.error-message:hover {
+    transform: scale(1.02);
+}
+
+/* Header: welcome + logout */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+/* Logout button */
+.btn-logout {
+    padding: 10px 18px;
+    border-radius: 10px;
+    text-decoration: none;
+    color: white;
+    background: linear-gradient(135deg, #ff5f6d, #ffc371);
+    font-weight: 600;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    transition: 0.3s;
+}
+
+.btn-logout:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+}
+
+/* Add entry button */
+.btn-add {
+    display: inline-block;
+    margin-top: 20px;
+    padding: 12px 25px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #56ab2f, #a8e063);
+    color: white;
+    font-weight: 600;
+    text-decoration: none;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    transition: 0.3s;
+}
+
+.btn-add:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+}
+
+/* Form layout */
+.form-group {
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Labels */
+.form-group label {
+    margin-bottom: 5px;
+    font-weight: 500;
+}
+
+/* Inputs */
+.form-group input {
+    padding: 12px;
+    border-radius: 10px;
+    border: none;
+    outline: none;
+    background: rgba(255,255,255,0.2);
+    color: #fff;
+    font-size: 14px;
+    transition: 0.3s;
+}
+
+.form-group input::placeholder {
+    color: rgba(255,255,255,0.7);
+}
+
+/* Focus effect */
+.form-group input:focus {
+    background: rgba(255,255,255,0.35);
+    box-shadow: 0 0 10px rgba(255,255,255,0.3);
+}
+
+/* Save button */
+.btn-save {
+    width: 100%;
+    padding: 12px;
+    border-radius: 12px;
+    border: none;
+    font-weight: 600;
+    background: linear-gradient(135deg, #00c6ff, #0072ff);
+    color: #fff;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.btn-save:hover {
+    transform: scale(1.03);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+}
+
+.success-message {
+    margin-bottom: 15px;
+    padding: 12px 20px;
+    border-radius: 12px;
+    background: rgba(0, 255, 100, 0.15);
+    backdrop-filter: blur(10px);
+    color: #00ff9d;
+    font-weight: 600;
+    text-align: center;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.25);
+}
+
+.success-message:hover {
+    transform: scale(1.02);
+}
+
+
+/* Fade-in animation */
+.card {
+    animation: fadeIn 0.6s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(15px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
+.form-group input:focus {
+    background: rgba(255,255,255,0.35);
+    box-shadow: 0 0 12px rgba(255,255,255,0.4);
+    transform: scale(1.02);
+}
+
+.sessions-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 15px;
+    margin-top: 15px;
+}
+
+.session-card {
+    padding: 15px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.12);
+    backdrop-filter: blur(8px);
+    color: #fff;
+}
+
+.session-card strong {
+    font-size: 16px;
+}
+
+.session-card p {
+    margin: 8px 0;
+    opacity: 0.9;
+}
+
+.btn-book {
+    margin-top: 10px;
+    padding: 6px 12px;
+    background-color: #00aaff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+/* ===== Added: classes referenced by templates but missing from the original stylesheet ===== */
+
+.no-bookings {
+    opacity: 0.8;
+    font-style: italic;
+}
+
+.profile-card, .bookings-card, .edit-card {
+    margin-bottom: 20px;
+}
+
+.profile-info p {
+    margin: 8px 0;
+}
+
+.btn-edit {
+    padding: 10px 18px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #00c6ff, #0072ff);
+}
+
+.btn-cancel {
+    background: linear-gradient(45deg, #ff4d4d, #ff7676);
+    padding: 6px 12px;
+    font-size: 14px;
+}
+
+.btn-book.full {
+    background: #888;
+    cursor: not-allowed;
+}
+
+/* Toast notifications used by editProfile.ejs */
+.toast {
+    visibility: hidden;
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.85);
+    color: #fff;
+    padding: 12px 24px;
+    border-radius: 10px;
+    z-index: 1000;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.toast.show {
+    visibility: visible;
+    opacity: 1;
+}
+
+/* ===== Reports page ===== */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 15px;
+    margin-top: 15px;
+}
+
+.stat-card {
+    padding: 18px 10px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.12);
+    backdrop-filter: blur(8px);
+    text-align: center;
+}
+
+.stat-card .stat-value {
+    display: block;
+    font-size: 28px;
+    font-weight: 600;
+}
+
+.stat-card .stat-label {
+    display: block;
+    margin-top: 6px;
+    font-size: 13px;
+    opacity: 0.85;
+}
+
+.bar-track {
+    width: 100%;
+    height: 10px;
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.15);
+    overflow: hidden;
+}
+
+.bar-fill {
+    height: 100%;
+    border-radius: 6px;
+    background: linear-gradient(90deg, #00c6ff, #0072ff);
+}
+
+.bar-fill.full {
+    background: linear-gradient(90deg, #ff7eb3, #ff758c);
+}
+
+.bar-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 8px 0;
+}
+
+.bar-row .bar-label {
+    width: 130px;
+    flex-shrink: 0;
+    font-size: 13px;
+    text-align: left;
+}
+
+.bar-row .bar-value {
+    width: 40px;
+    flex-shrink: 0;
+    font-size: 13px;
+    text-align: right;
+}
+
+.tab-nav {
+    display: flex;
+    gap: 8px;
+    margin: 15px 0;
+    flex-wrap: wrap;
+}
+
+.tab-nav a {
+    margin: 0;
+    padding: 8px 16px;
+    font-size: 14px;
+}

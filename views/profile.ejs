@@ -1,0 +1,104 @@
+<%- include('partials/header', { pageTitle: 'My Profile' }) %>
+
+<div class="container">
+
+    <!-- Profile Card -->
+    <div class="card profile-card">
+        <h3>Personal Information</h3>
+        <div class="profile-info">
+            <p><strong>Full Name:</strong> <%= user.full_name || 'N/A' %></p>
+            <p><strong>Email:</strong> <%= user.email || 'N/A' %></p>
+            <p><strong>Phone:</strong> <%= user.phone || 'N/A' %></p>
+        </div>
+        <a href="/profile/edit" class="btn-edit">✏️ Edit Profile</a>
+        <a href="/swimmers" class="btn-edit">🏊 Manage Swimmers</a>
+    </div>
+
+    <!-- Bookings Section -->
+    <div class="card bookings-card">
+        <h3>Your Bookings 📅</h3>
+
+        <% if(bookings.length === 0) { %>
+            <p class="no-bookings">You have no bookings yet 😔</p>
+        <% } else { %>
+            <table>
+                <tr>
+                    <th>Session</th>
+                    <th>Date</th>
+                    <th>Time</th>
+                    <th>Name</th>
+                    <th>Age</th>
+                    <th>Can't Attend</th>
+                </tr>
+                <% bookings.forEach(b => { %>
+                <tr>
+                    <td><%= b.title %></td>
+                    <td><%= new Date(b.date).toLocaleDateString() %></td>
+                    <td><%= b.start_time %> - <%= b.end_time %></td>
+                    <td><%= b.name %></td>
+                    <td><%= b.age %></td>
+                    <td>
+                        <form action="/bookings/cant-attend/<%= b.booking_id %>" method="POST" style="display:inline;" onsubmit="return confirm(&quot;Mark as can't attend? This frees your spot and gives a make-up credit you can use for a future session.&quot;);">
+                            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                            <button type="submit" class="btn-cancel">❌</button>
+                        </form>
+                    </td>
+                </tr>
+                <% }) %>
+            </table>
+        <% } %>
+    </div>
+
+    <!-- Make-Up Credits -->
+    <% if (credits.length > 0) { %>
+    <div class="card">
+        <h3>🎟 Make-Up Credits</h3>
+        <p class="no-bookings" style="font-style:normal;">Earned when a booking is marked "Can't Attend" — use one when booking any future session below, or on Sessions/Schedule/Add.</p>
+        <table>
+            <tr><th>Swimmer</th><th>Missed Session</th><th>Date</th></tr>
+            <% credits.forEach(c => { %>
+                <tr>
+                    <td><%= c.swimmer_name %></td>
+                    <td><%= c.source_title %></td>
+                    <td><%= new Date(c.source_date).toLocaleDateString() %></td>
+                </tr>
+            <% }) %>
+        </table>
+    </div>
+    <% } %>
+
+    <!-- Upcoming sessions to book -->
+    <div class="card">
+        <h3>Upcoming Sessions</h3>
+        <% const open = sessions.filter(s => (s.capacity - s.booked_count) > 0); %>
+        <% if (open.length === 0) { %>
+            <p class="no-bookings">No open sessions right now 😔</p>
+        <% } else { %>
+        <div class="sessions-grid">
+            <% open.forEach(s => { %>
+                <div class="session-card">
+                    <strong><%= s.title %></strong>
+                    <p><%= new Date(s.date).toLocaleDateString() %> | <%= s.start_time %> - <%= s.end_time %></p>
+                    <p>Spots left: <%= s.capacity - s.booked_count %></p>
+                    <% if (swimmers.length === 0) { %>
+                        <p><a href="/swimmers" class="btn-add">➕ Add a swimmer first</a></p>
+                    <% } else { %>
+                    <form action="/sessions/book/<%= s.id %>" method="POST">
+                        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                        <select name="swimmer_id" required>
+                            <% swimmers.forEach(sw => { %>
+                                <option value="<%= sw.id %>"><%= sw.name %> (age <%= sw.age %>)</option>
+                            <% }) %>
+                        </select>
+                        <%- include('partials/creditSelect') %>
+                        <button type="submit" class="btn-book">Book ✅</button>
+                    </form>
+                    <% } %>
+                </div>
+            <% }) %>
+        </div>
+        <% } %>
+    </div>
+</div>
+
+<%- include('partials/footer') %>

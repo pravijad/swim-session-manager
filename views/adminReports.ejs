@@ -1,0 +1,154 @@
+<%- include('partials/header', { pageTitle: 'Reports' }) %>
+
+<div class="container">
+    <h1>📊 Reports</h1>
+    <p><a href="/admin/dashboard" class="btn-edit">🛠 Dashboard</a>
+       <a href="/admin/swimmers" class="btn-edit">👥 Manage Swimmers</a></p>
+
+    <!-- Overview -->
+    <div class="card">
+        <h3>Overview</h3>
+        <div class="stats-grid">
+            <div class="stat-card">
+                <span class="stat-value"><%= overview.total_users %></span>
+                <span class="stat-label">Users</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-value"><%= overview.total_swimmers %></span>
+                <span class="stat-label">Swimmers</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-value"><%= overview.total_sessions %></span>
+                <span class="stat-label">Sessions</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-value"><%= overview.total_bookings %></span>
+                <span class="stat-label">Bookings</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-value"><%= overview.total_achievements %></span>
+                <span class="stat-label">Achievements</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-value"><%= overallFillRate %>%</span>
+                <span class="stat-label">Overall fill rate</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-value">🎟 <%= overview.credits_available %></span>
+                <span class="stat-label">Make-up credits available</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-value"><%= overview.credits_used %></span>
+                <span class="stat-label">Make-up credits redeemed</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Attendance per session -->
+    <div class="card">
+        <h3>Attendance by Session</h3>
+        <% if (sessionAttendance.length === 0) { %>
+            <p class="no-bookings">No sessions yet 😔</p>
+        <% } else { %>
+        <table>
+            <tr><th>Session</th><th>Date</th><th>Time</th><th>Booked / Capacity</th><th>Fill rate</th></tr>
+            <% sessionAttendance.forEach(s => { %>
+                <tr>
+                    <td><%= s.title %></td>
+                    <td><%= new Date(s.date).toLocaleDateString() %></td>
+                    <td><%= s.start_time.slice(0,5) %>–<%= s.end_time.slice(0,5) %></td>
+                    <td><%= s.booked %> / <%= s.capacity %></td>
+                    <td>
+                        <div class="bar-track">
+                            <div class="bar-fill <%= s.fillRate >= 100 ? 'full' : '' %>" style="width: <%= Math.min(s.fillRate, 100) %>%;"></div>
+                        </div>
+                        <%= s.fillRate %>%
+                    </td>
+                </tr>
+            <% }) %>
+        </table>
+        <% } %>
+    </div>
+
+    <!-- Most popular session types -->
+    <div class="card">
+        <h3>Most Popular Session Types</h3>
+        <% if (popularSessions.length === 0) { %>
+            <p class="no-bookings">No sessions yet 😔</p>
+        <% } else {
+            const maxPop = Math.max(...popularSessions.map(p => Number(p.total_bookings)), 1);
+        %>
+        <% popularSessions.forEach(p => { %>
+            <div class="bar-row">
+                <span class="bar-label"><%= p.title %></span>
+                <div class="bar-track">
+                    <div class="bar-fill" style="width: <%= Math.round((Number(p.total_bookings) / maxPop) * 100) %>%;"></div>
+                </div>
+                <span class="bar-value"><%= p.total_bookings %></span>
+            </div>
+        <% }) %>
+        <p class="no-bookings">Bookings per session title, across every date it's been offered.</p>
+        <% } %>
+    </div>
+
+    <!-- Bookings by day of week -->
+    <div class="card">
+        <h3>Bookings by Day of Week</h3>
+        <% if (bookingsByDay.length === 0) { %>
+            <p class="no-bookings">No sessions yet 😔</p>
+        <% } else {
+            const maxDay = Math.max(...bookingsByDay.map(d => Number(d.bookings)), 1);
+        %>
+        <% bookingsByDay.forEach(d => { %>
+            <div class="bar-row">
+                <span class="bar-label"><%= d.day_name %></span>
+                <div class="bar-track">
+                    <div class="bar-fill" style="width: <%= Math.round((Number(d.bookings) / maxDay) * 100) %>%;"></div>
+                </div>
+                <span class="bar-value"><%= d.bookings %></span>
+            </div>
+        <% }) %>
+        <% } %>
+    </div>
+
+    <!-- Monthly trend -->
+    <div class="card">
+        <h3>Monthly Trend</h3>
+        <% if (monthlyTrend.length === 0) { %>
+            <p class="no-bookings">Not enough data yet 😔</p>
+        <% } else { %>
+        <table>
+            <tr><th>Month</th><th>New signups</th><th>Bookings</th><th>Achievements issued</th></tr>
+            <% monthlyTrend.forEach(m => { %>
+                <tr>
+                    <td><%= m.month %></td>
+                    <td><%= m.signups %></td>
+                    <td><%= m.bookings %></td>
+                    <td><%= m.achievements %></td>
+                </tr>
+            <% }) %>
+        </table>
+        <% } %>
+    </div>
+
+    <!-- Top swimmers by achievements -->
+    <div class="card">
+        <h3>Progress Leaders (Achievements)</h3>
+        <% if (topSwimmers.length === 0) { %>
+            <p class="no-bookings">No achievements recorded yet 😔</p>
+        <% } else { %>
+        <table>
+            <tr><th>Swimmer</th><th>Parent account</th><th>Achievements</th></tr>
+            <% topSwimmers.forEach(s => { %>
+                <tr>
+                    <td><%= s.name %></td>
+                    <td><%= s.username %></td>
+                    <td><%= s.achievement_count %></td>
+                </tr>
+            <% }) %>
+        </table>
+        <% } %>
+    </div>
+</div>
+
+<%- include('partials/footer') %>
